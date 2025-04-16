@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tutor Profile - TutorConnect</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/tutor-profile.css}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="/images/logo.png" alt="TutorConnect" width="30">
+                TutorConnect
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="btn btn-outline-secondary ms-2" href="/logout">Sign Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tutor Profile Section -->
+    <section class="container my-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card profile-card shadow-lg">
+                    <div class="card-body text-center">
+                      <div class="profile-pic-container text-center">
+        <img th:src="${tutor.profilePic}" alt="Profile Picture" class="rounded-circle" width="150" height="150"
+             onerror="this.src='/images/download.png'">
+        <h4 th:text="${tutor.name }"></h4>
+    </div>
+                        <h2 class="card-title" th:text="${tutor?.name ?: 'Tutor Name'}">Tutor Name</h2>
+                        <p class="text-muted" th:text="${tutor?.qualifications ?: 'Qualifications not available'}">Qualifications</p>
+                        <p class="card-text mt-3">
+                            <strong>Email:</strong> <span th:text="${tutor?.email ?: 'Not provided'}"></span><br>
+                            <strong>Hourly Rate:</strong> $<span th:text="${tutor?.hourlyRate ?: '0.00'}"></span><br>
+                            <strong>Average Rating:</strong>
+                            <span>
+                                <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <i th:class="${i <= tutor?.averageRating ? 'bi bi-star-fill text-warning' : 'bi bi-star text-secondary'}"></i>
+                                </th:block>
+                            </span>
+                            <span th:text="${#numbers.formatDecimal(tutor?.averageRating, 1, 1)}"></span> 
+                            ratings
+                        </p>
+                        <hr>
+
+                        <h4>Rate This Tutor</h4>
+                     <!-- Rating Section -->
+<div th:if="${!alreadyRated}">
+    <form th:action="@{'/tutors/' + ${tutor.id} + '/rate'}" method="post">
+        <div class="rating">
+            <input type="radio" name="rating" value="5" id="star5" required>
+            <label for="star5">&#9733;</label>
+            <input type="radio" name="rating" value="4" id="star4">
+            <label for="star4">&#9733;</label>
+            <input type="radio" name="rating" value="3" id="star3">
+            <label for="star3">&#9733;</label>
+            <input type="radio" name="rating" value="2" id="star2">
+            <label for="star2">&#9733;</label>
+            <input type="radio" name="rating" value="1" id="star1">
+            <label for="star1">&#9733;</label>
+        </div>
+        <button type="submit" class="btn btn-custom mt-2">Submit Rating</button>
+    </form>
+</div>
+
+<!-- Message if the user has already rated -->
+<p th:if="${alreadyRated}" class="text-muted">
+    You have already rated this tutor.
+</p>
+
+
+                        <hr>
+                        <h4>About Me</h4>
+                        <p class="card-text" th:text="${tutor?.bio ?: 'No bio available.'}">Short bio about the tutor.</p>
+                        <hr>
+                        <h4>Subjects</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" th:each="subject : ${tutor?.subjects ?: {}}" 
+                                th:text="${subject ?: 'Subject not available'}">Subject</li>
+                        </ul>
+                        <hr>
+                        <button class="btn btn-custom mt-3" data-bs-toggle="modal" data-bs-target="#availabilityModal">Book</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Show error message if the user has already rated -->
+    
+<!-- Show error message if the user has already rated -->
+<div th:if="${errorMessage}">
+    <p class="text-danger" th:text="${errorMessage}"></p>
+</div>
+
+<!-- Success message -->
+<div th:if="${successMessage}">
+    <p class="text-success" th:text="${successMessage}"></p>
+</div>
+
+    <!-- Availability Modal -->
+    <div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="availabilityModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="availabilityModalLabel">Select Availability</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="availability : ${tutor.availability}">
+                            <label>
+                                <input type="radio" name="availability" class="form-check-input" 
+                                       th:value="${availability.day + ': ' + availability.startTime + ' - ' + availability.endTime}" 
+                                       onclick="setSelectedAvailability(this.value)">
+                                <span th:text="${availability.day}">Day</span>: 
+                                <span th:text="${availability.startTime}">Start Time</span> - 
+                                <span th:text="${availability.endTime}">End Time</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="bookNowButton" class="btn btn-success" disabled data-bs-toggle="modal" data-bs-target="#paymentModal">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm" th:action="@{/students/create-booking}" method="post">
+                        <div class="mb-3">
+                            <label for="subjectDropdown" class="form-label">Select Subject</label>
+                            <select id="subjectDropdown" name="subject" class="form-select" required>
+                                <option value="" selected disabled>Select a subject</option>
+                                <option th:each="subject : ${tutor.subjects}" th:value="${subject}" th:text="${subject}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardName" class="form-label">Cardholder Name</label>
+                            <input type="text" class="form-control" id="cardName" name="cardName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" name="expiryDate" required>
+                            </div>
+                            <div class="col">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" required>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="tutorId" th:value="${tutor.id}">
+                        <input type="hidden" id="selectedTimeInput" name="selectedTime" required>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Confirm Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="paymentConfirmationModal" tabindex="-1" aria-labelledby="paymentConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentConfirmationModalLabel">Booking Pending Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Your booking request has been sent! The tutor will review it, and if approved, the payment will be finalized.</p>
+                <p>Check your email within 24 hours for confirmation.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer class="footer text-center mt-5" id="contact">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 TutorConnect - Connecting students with the best tutors worldwide.</p>
+            <p>Email: <a href="mailto:support@tutorconnect.com">tutorconnect123@gmail.com</a></p>
+            <p>Phone: +25111890232</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js}"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookingForm = document.querySelector("#bookingForm"); // Ensure correct ID
+
+        if (bookingForm) {
+            bookingForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Stop page reload
+
+                // Ensure user has selected a time
+                const selectedTimeInput = document.getElementById('selectedTimeInput');
+                if (!selectedTimeInput.value) {
+                    alert("Please select an available time before booking.");
+                    return;
+                }
+
+                // Prepare form data
+                const formData = new FormData(bookingForm);
+
+                // Send data via AJAX instead of reloading the page
+                fetch(bookingForm.action, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Booking request failed.");
+                    }
+                    return response.text();
+                })
+                .then(() => {
+                    // Show the modal after the booking is processed
+                    const paymentModal = new bootstrap.Modal(document.getElementById('paymentConfirmationModal'));
+                    paymentModal.show();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while processing your booking.");
+                });
+            });
+        } else {
+            console.error("Booking form not found.");
+        }
+    });
+
+
+
+    function enableBookNow() {
+        document.getElementById('bookNowButton').disabled = false;
+    }
+    function enableBookNow() {
+        document.getElementById('bookNowButton').disabled = false;
+    }
+
+    function setSelectedAvailability(value) {
+        const timeRange = value.split(': ')[1]; // Extract the time range, e.g., "10:00 AM - 12:00 PM"
+        const startTime = timeRange.split(' - ')[0].trim(); // Extract the start time, e.g., "10:00 AM"
+
+        const today = new Date(); // Get the current date
+        const formattedDate = today.toISOString().split('T')[0]; // Format as yyyy-MM-dd
+
+        // Ensure the start time includes a leading zero for single-digit hours
+        const timeParts = startTime.split(' '); // Separate time and AM/PM
+        let [hour, minute] = timeParts[0].split(':'); // Split hour and minute
+        const period = timeParts[1]; // Get AM/PM
+
+        // Add a leading zero to single-digit hours
+        if (hour.length === 1) {
+            hour = `0${hour}`;
+        }
+
+        // Reconstruct the properly formatted time
+        const formattedStartTime = `${hour}:${minute} ${period}`;
+
+        // Combine date with the start time to create the correct format
+        const selectedTime = `${formattedDate} ${formattedStartTime}`;
+
+        // Set the value to the hidden input for the backend
+        const selectedTimeInput = document.getElementById('selectedTimeInput');
+        selectedTimeInput.value = selectedTime;
+
+        // Enable the Book Now button
+        document.getElementById('bookNowButton').disabled = false;
+    }
+    const bookingSuccess = /*[[${bookingSuccess}]]*/ false; // Use Thymeleaf to insert the attribute value
+   
+    if (bookingSuccess) {
+        // Show the confirmation modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        confirmationModal.show();
+    }
+
+
+</script>
+</body>
+</html>

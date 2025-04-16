@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Approved Bookings</title>
+     <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+   <link rel="stylesheet" th:href="@{/css/approved-booking.css}"> 
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#"> 
+                <img src="/images/logo.png" alt="TutorConnect" width="30">
+                TutorConnect
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+                            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link btn btn-danger text-white" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+            </div>
+       
+    </nav>
+
+    <h1>Approved Bookings</h1>
+    
+    <table class="bookings-table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Selected Time</th>
+                <th>Amount Paid</th>
+                <th>Meeting Link</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="booking : ${approvedBookings}">
+                <td th:text="${booking.studentName}"></td>
+                <td th:text="${booking.studentEmail}"></td>
+                <td th:text="${booking.subject}"></td>
+                <td th:text="${booking.selectedTime}"></td>
+                <td th:text="${booking.amountPaid}"></td>
+                <td class="meeting-link">
+                    <a th:href="${booking.meetingLink}" th:text="'Join Meeting'"></a>
+                </td>
+                <td>
+                    <span class="status status-approved" th:text="${booking.status}"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <a href="/tutors/dashboard" class="back-btn">Back to Dashboard</a>
+
+</body>
+</html>

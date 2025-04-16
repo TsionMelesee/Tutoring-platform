@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Tutor Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+    <link rel="stylesheet" th:href="@{/css/edit-tutor-profile.css}"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Your Profile</h1>
+<div class="profile-pic-container text-center">
+            <img th:src="${tutor.profilePic}" alt="Profile Picture" class="rounded-circle" width="150" height="150"
+                 onerror="this.src='/images/download.png'">
+            <form th:action="@{/tutors/update-profile-pic/{tutorId}(tutorId=${tutor.id})}" method="post" enctype="multipart/form-data">
+                <input type="file" name="profilePic" accept="image/*">
+                <button type="submit" class="btn btn-primary mt-2">Upload New Picture</button>
+            </form>
+        </div>
+
+        
+        <form th:action="@{/tutors/update-profile}" method="post" th:object="${tutor}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" th:value="*{name}" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:value="*{email}" required>
+
+            <label for="qualifications">Qualifications:</label>
+            <input type="text" id="qualifications" name="qualifications" th:value="*{qualifications}" required>
+
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio" th:text="*{bio}"></textarea>
+
+            <label for="hourlyRate">Hourly Rate ($):</label>
+            <input type="number" id="hourlyRate" name="hourlyRate" th:value="*{hourlyRate}" step="0.01" required>
+
+            <!-- Subjects input -->
+            <label for="subjectInput">Subjects:</label>
+            <input type="text" id="subjectInput" placeholder="Type a subject and press Enter">
+            <button type="button" onclick="addSubject()">Add</button>
+            
+            <!-- Display added subjects -->
+            <div id="subjectsContainer" class="subjects-container"></div>
+
+            <!-- Hidden input to store selected subjects -->
+            <input type="hidden" id="subjectsInput" name="subjects" th:value="*{subjects}">
+
+            <h2>Availability</h2>
+            <div id="availability-container"></div>
+
+            <button type="button" onclick="addAvailability()">Add Availability</button>
+            <button type="submit">Save Changes</button>
+        </form>
+
+   </div>
+<script>
+    document.getElementById("subjectInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            addSubject();
+        }
+    });
+
+    function addSubject() {
+        let input = document.getElementById("subjectInput");
+        let container = document.getElementById("subjectsContainer");
+        let hiddenInput = document.getElementById("subjectsInput");
+
+        let subject = input.value.trim();
+        if (subject && !document.getElementById("subject-" + subject)) {
+            let div = document.createElement("div");
+            div.classList.add("subject-tag");
+            div.id = "subject-" + subject;
+
+            // Create subject text span (to ensure we only store text)
+            let subjectText = document.createElement("span");
+            subjectText.textContent = subject;
+
+            // Create 'x' button
+            let removeBtn = document.createElement("button");
+            removeBtn.innerHTML = "&times;";
+            removeBtn.className = "remove-btn";
+            removeBtn.onclick = function() {
+                removeSubject(subject);
+            };
+
+            div.appendChild(subjectText);
+            div.appendChild(removeBtn);
+            container.appendChild(div);
+
+            updateSubjectsInput();
+            input.value = ""; // Clear input after adding
+        }
+    }
+
+    function removeSubject(subject) {
+        let element = document.getElementById("subject-" + subject);
+        if (element) {
+            element.remove();
+            updateSubjectsInput();
+        }
+    }
+
+    function updateSubjectsInput() {
+        let container = document.getElementById("subjectsContainer");
+        let subjects = Array.from(container.children).map(div => div.firstChild.textContent.trim());
+        document.getElementById("subjectsInput").value = subjects.join(",");
+    }
+
+    function addAvailability() {
+        let container = document.getElementById("availability-container");
+        let div = document.createElement("div");
+        div.classList.add("availability-item");
+        div.innerHTML = `
+            <label>Day:</label>
+            <input type="text" name="availabilityDays" required>
+            <label>Start Time:</label>
+            <input type="time" name="startTimes" required>
+            <label>End Time:</label>
+            <input type="time" name="endTimes" required>
+            <button type="button" class="remove-btn" onclick="removeAvailability(this)">×</button>
+        `;
+        container.appendChild(div);
+    }
+
+    function removeAvailability(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+</body>
+</html>

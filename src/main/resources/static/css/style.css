@@ -1,0 +1,17 @@
+@charset "UTF-8";
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 20px;
+    background: #f8f9fa;
+}

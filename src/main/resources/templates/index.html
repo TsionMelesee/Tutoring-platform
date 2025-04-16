@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TutorConnect</title>
+
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}"> <!-- Custom styles -->
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#"> 
+                <img src="/images/logo.png" alt="TutorConnect" width="30">
+                TutorConnect
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="btn btn-success" href="/users/signin">Log In</a></li>
+                    <li class="nav-item"><a class="btn btn-outline-secondary ms-2" href="/admin/signup">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="text-center py-5 bg-light">
+        <div class="container">
+            <h1 class="fw-bold">Welcome to TutorConnect</h1>
+            <p class="lead">Connecting students with experienced tutors for personalized learning experiences.</p>
+            <a href="/users/signin" class="btn btn-success">Get Started</a>
+            <a href="/tutors/apply" class="btn btn-outline-primary ms-3">Become a Tutor</a>
+            <a href="/admin/signup" class="btn btn-outline-danger ms-3">Admin Panel</a>
+        </div>
+    </header>
+
+    <section id="about" class="container my-5">
+        <h2 class="text-center mb-4">About TutorConnect</h2>
+        <p class="text-center">TutorConnect is a platform designed to bridge the gap between university students and expert tutors. Our mission is to provide an easy and efficient way for students to find the guidance they need in various subjects.</p>
+    </section>
+
+    <section class="container my-5">
+        <h2 class="text-center mb-4">Featured Tutors</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <img src="/images/sophia.png" class="card-img-top rounded-circle mx-auto mt-3" alt="Sophia Lee" style="width: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Sophia Lee</h5>
+                        <p class="card-text text-muted">Mathematics Expert</p>
+                        <a href="#" class="btn btn-success">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <img src="/images/james.png" class="card-img-top rounded-circle mx-auto mt-3" alt="James Carter" style="width: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title">James Carter</h5>
+                        <p class="card-text text-muted">Physics Specialist</p>
+                        <a href="#" class="btn btn-success">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <img src="/images/emily.png" class="card-img-top rounded-circle mx-auto mt-3" alt="Emily Johnson" style="width: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Emily Johnson</h5>
+                        <p class="card-text text-muted">English Language Tutor</p>
+                        <a href="#" class="btn btn-success">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="container my-5">
+        <h2 class="text-center mb-4">Contact Us</h2>
+        <p class="text-center">Have questions or need assistance? Reach out to us!</p>
+        <div class="text-center">
+            <p>Email: <a href="mailto:support@tutorconnect.com">tutorconnect123@gmail.com</a></p>
+            <p>Phone: +25111890232</p>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 TutorConnect - Connecting students with the best tutors worldwide.</p>
+            <div class="mt-2">
+                <a href="#" class="text-white text-decoration-none mx-2">Home</a>
+                <a href="#about" class="text-white text-decoration-none mx-2">About</a>
+                <a href="#contact" class="text-white text-decoration-none mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

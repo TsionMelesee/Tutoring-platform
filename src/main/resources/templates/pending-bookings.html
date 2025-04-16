@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Bookings</title>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}"> 
+    <link rel="stylesheet" th:href="@{/css/pending-booking.css}">
+    <script>
+        function openApprovalForm(bookingId) {
+            document.getElementById('bookingId').value = bookingId;
+            document.getElementById('approvalForm').action = "/tutors/bookings/" + bookingId + "/status";
+            document.getElementById('approvalModal').style.display = 'block';
+        }
+
+        function closeApprovalForm() {
+            document.getElementById('approvalModal').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#"> 
+                <img src="/images/logo.png" alt="TutorConnect" width="30">
+                TutorConnect
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+                            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link btn btn-danger text-white" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+            </div>
+       
+    </nav>
+
+    <h1>Pending Bookings</h1>
+    
+    <table class="bookings-table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Subject</th>
+                <th>Selected Time</th>
+                <th>Amount Paid</th>
+                <th>Meeting Link</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="booking : ${pendingBookings}">
+                <td th:text="${booking.studentName}"></td>
+                <td th:text="${booking.studentEmail}"></td>
+                <td th:text="${booking.subject}"></td>
+                <td th:text="${booking.selectedTime}"></td>
+                <td th:text="${booking.amountPaid}"></td>
+                <td class="meeting-link">
+                    <a th:href="${booking.meetingLink}" th:text="'Join Meeting'" target="_blank"></a>
+                </td>
+                <td th:text="${booking.status}"></td>
+                <td>
+                    <button th:if="${booking.status == 'paying'}" 
+                            class="approve-btn"
+                            th:attr="onclick='openApprovalForm(\'' + ${booking.id} + '\')'">
+                        Approve
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+    <!-- Approval Modal -->
+    <div id="approvalModal">
+        <h2>Approve Booking</h2>
+        <p>To approve the session, create a Google Meet link and paste it here:</p>
+        <a href="https://meet.google.com/" target="_blank">Create Google Meet Link</a>
+
+        <form id="approvalForm" method="post" class="modal-content">
+            <input type="hidden" id="bookingId" name="bookingId">
+            <input type="hidden" name="status" value="approved">
+            <label for="meetingLink">Meeting Link:</label>
+            <input type="text" id="meetingLink" name="manualMeetingLink" required>
+            <div class="modal-buttons">
+                <button type="submit" class="approve-btn-modal">Approve</button>
+                <button type="button" class="cancel-btn" onclick="closeApprovalForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

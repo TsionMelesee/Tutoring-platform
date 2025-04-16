@@ -1,0 +1,63 @@
+.rating {
+            direction: rtl;
+            unicode-bidi: bidi-override;
+            display: inline-flex;
+            justify-content: center;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .rating input:checked ~ label {
+            color: gold;
+        }
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: gold;
+        }
+
+        .profile-card {
+            border-radius: 12px;
+            background: linear-gradient(to right, #f0f2f5, #e8e9ec);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+           
+        }
+        
+
+        .profile-card .card-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .profile-card .card-body p {
+            color: #7f8c8d;
+        }
+
+        .btn-custom {
+            background-color: #198754;
+            color: white;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-custom:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .modal-header, .modal-footer {
+            background-color: #f9fafb;
+        }
+        .modal-title {
+            color: #2c3e50;
+        }
+        .modal-body {
+            font-size: 1.1rem;
+        }

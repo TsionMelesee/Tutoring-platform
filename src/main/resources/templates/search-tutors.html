@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Tutors</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="text-center py-5 bg-light">
+        <h1>Search Results for "<span th:text="${subject}"></span>"</h1>
+    </header>
+
+    <section class="container my-5">
+        <div th:if="${tutors.isEmpty()}">
+            <p class="text-center">No tutors found for the selected filters. Try adjusting your search criteria.</p>
+        </div>
+        <div class="row" th:each="tutor : ${tutors}">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${tutor.name}"></h5>
+                        <p class="card-text">Subject Expertise: <span th:text="${tutor.subjects}"></span></p>
+                        <p class="card-text">Hourly Rate: $<span th:text="${tutor.hourlyRate}"></span></p>
+                        <a href="#" class="btn btn-primary">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
